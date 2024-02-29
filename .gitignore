@@ -1,0 +1,14 @@
+# Ignore folder 1M04
+1M04/
+
+# Ignore configuration file cfg.conf
+cfg.conf
+
+# Ignore image file 1M04.mrxs
+1M04.mrxs
+
+# Ignore folder openslidea
+openslide-win64-20231011/
+
+#ALL photos
+*.png
