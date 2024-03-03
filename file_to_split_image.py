@@ -148,5 +148,5 @@ def seperate_patches(patches, save_dir, base_folder = general_image_folder):
 
 
 
-patches = extract_random_patches(slide)
-seperate_patches(patches,"seperated")
+patches = extract_random_patches(slide, num_patches=10000)
+seperate_patches(patches,"separated")
