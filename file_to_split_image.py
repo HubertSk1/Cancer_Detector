@@ -1,4 +1,11 @@
 import configparser
+import numpy as np
+import cv2
+from PIL import Image
+import matplotlib.pyplot as plt
+import os
+
+
 
 # Create a ConfigParser object
 config = configparser.ConfigParser()
@@ -11,25 +18,11 @@ openslide_bin_path = config['path_to_slide']['openslide_path']
 slide_photo_path = config['path_to_slide']['slide_local_path'] 
 general_image_folder = config["images"]["general_path"]
 
-
-
-import numpy as np
-import cv2
-from PIL import Image
-import matplotlib.pyplot as plt
-import os
-
 if hasattr(os, 'add_dll_directory'):
     with os.add_dll_directory(openslide_bin_path):
         import openslide
 else:
     import openslide
-
-
-
-
-slide = openslide.OpenSlide(slide_photo_path)
-
 
 
 def get_color_map(patch):
@@ -78,7 +71,7 @@ def get_color_map(patch):
     
     return color_seperated_image, (pixels, white_pixels,red_pixels, black_pixels,purple_pixels,pink_pixels)
 
-def divide_whole_slide_to_patches(slide, patch_size=(256, 256), high_threshold = 200, low_threshold = 30, early_stop = True, early_stop_number=100):
+def divide_whole_slide_to_patches(slide, patch_size=(256, 256), high_threshold = 200, low_threshold = 30, early_stop = False, early_stop_number=100):
     slide_width, slide_height = slide.dimensions
     patch_width, patch_height = patch_size
     num = 1
@@ -91,7 +84,7 @@ def divide_whole_slide_to_patches(slide, patch_size=(256, 256), high_threshold =
             if median_color < high_threshold and median_color > low_threshold:
                 patches.append(patch)                
                 num+=1  
-            if num > 100 and early_stop_number:
+            if early_stop and num>early_stop_number:
                 return patches
     return patches        
 
@@ -148,5 +141,7 @@ def seperate_patches(patches, save_dir, base_folder = general_image_folder):
 
 
 
-patches = extract_random_patches(slide, num_patches=10000)
-seperate_patches(patches,"separated")
+if __name__ == "__main__":
+    slide = openslide.OpenSlide(slide_photo_path)
+    patches = divide_whole_slide_to_patches(slide)
+    seperate_patches(patches,"separated")
