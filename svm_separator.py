@@ -6,6 +6,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import StandardScaler
 from PIL import Image
 import configparser
+import joblib
 
 # Create a ConfigParser object
 config = configparser.ConfigParser()
@@ -16,10 +17,10 @@ config.read('cfg.conf')
 
 general_image_folder = config["images"]["general_path"]
 
-cancer_folder = os.path.join(general_image_folder, 'separated')
+cancer_folder = os.path.join(general_image_folder, 'separated_color_base_tagged')
 cancer_folder = os.path.join(cancer_folder, 'Cancer')
 
-no_cancer_folder = os.path.join(general_image_folder, 'separated')
+no_cancer_folder = os.path.join(general_image_folder, 'separated_color_base_tagged')
 no_cancer_folder = os.path.join(no_cancer_folder, 'No-Cancer')
 
 
@@ -56,6 +57,9 @@ svm_model.fit(X_train_scaled, y_train)
 
 y_pred = svm_model.predict(X_valid_scaled)
 
+# Save the trained SVM model
+model_filename = 'models/svm_model.pkl'
+joblib.dump(svm_model, model_filename)
 
-accuracy = accuracy_score(y_valid, y_pred)
-print(f'Dokładność modelu na zbiorze walidacyjnym: {accuracy:.2f}')
+scaler_filename = 'models/scaler.pkl'
+joblib.dump(scaler, scaler_filename)
