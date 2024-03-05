@@ -58,6 +58,7 @@ svm_model.fit(X_train_scaled, y_train)
 y_pred = svm_model.predict(X_valid_scaled)
 
 # Save the trained SVM model
+os.makedirs("models", exist_ok=True)
 model_filename = 'models/svm_model.pkl'
 joblib.dump(svm_model, model_filename)
 

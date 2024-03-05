@@ -12,3 +12,6 @@ openslide-win64-20231011/
 
 #ALL photos
 *.png
+
+#Models
+Models/
