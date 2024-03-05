@@ -71,6 +71,13 @@ def get_color_map(patch):
     
     return color_seperated_image, (pixels, white_pixels,red_pixels, black_pixels,purple_pixels,pink_pixels)
 
+def predict_base_on_color(patch):
+    _, (pixels, white_pixels,red_pixels, black_pixels,purple_pixels,pink_pixels) = get_color_map(patch)
+    if (purple_pixels/((pixels-white_pixels)+1))>0.2 and purple_pixels/(pink_pixels+1) > 1.1:
+        return 1
+    else:
+        return 0
+    
 def divide_whole_slide_to_patches(slide, patch_size=(256, 256), high_threshold = 200, low_threshold = 30, early_stop = False, early_stop_number=100):
     slide_width, slide_height = slide.dimensions
     patch_width, patch_height = patch_size
@@ -107,8 +114,9 @@ def extract_random_patches(slide, patch_size=(256, 256), num_patches=100, high_t
     return patches
 
 def save_patches_to_dir(patches, save_dir, base_folder = general_image_folder):
-    os.makedirs(save_dir, exist_ok=True)
+    os.makedirs(base_folder, exist_ok=True)
     save_dir = os.path.join(base_folder,save_dir)
+    os.makedirs(save_dir, exist_ok=True)
     for index,patch in enumerate(patches):
         patch_filename = f"patch_{index}.png"
         patch_path = os.path.join(save_dir, patch_filename)
@@ -144,4 +152,7 @@ def seperate_patches(patches, save_dir, base_folder = general_image_folder):
 if __name__ == "__main__":
     slide = openslide.OpenSlide(slide_photo_path)
     patches = divide_whole_slide_to_patches(slide)
-    seperate_patches(patches,"separated")
+    seperate_patches(patches,"separated_color_base_tagged")
+
+    test_patches = extract_random_patches(slide,num_patches = 200)
+    save_patches_to_dir(test_patches,"test_photos")
